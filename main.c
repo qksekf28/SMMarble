@@ -164,9 +164,12 @@ void goForward(int player, int step)
      printf("%s is at node %i (name: %s)\n", 
                 cur_player[player].name, cur_player[player].position,
                 smmObj_getName(boardPtr));
-    
+				
+	 //---Player is MOVING---
      cur_player[player].position += step;
-                
+     
+     //---UPDATE boardPtr to CHANGED POSITION
+     boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position ); // <-- necessary for Chage
      printf("%s go to node %i (name: %s)\n", 
                 cur_player[player].name, cur_player[player].position,
                 smmObj_getName(boardPtr));
@@ -207,8 +210,8 @@ int main(int argc, const char * argv[]) {
     }
     
     printf("Reading board component......\n");
-    //read a node parameter set // �ѱ۸� ���ڿ���, �迭�̴ϱ� ��ǥ �Ⱥٿ��� ��, while������ �� 1�� �� ����
-    while ( fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4 ) //read a node parameter set
+    //read a node parameter set
+    while ( fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4 )
     // fscanf : read contents in "marbleBoardConfig.txt"
     {
         //store the parameter set
