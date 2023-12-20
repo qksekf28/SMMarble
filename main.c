@@ -156,7 +156,7 @@ void* findGrade(int player, const char *lectureName)
 
 
 // generate random grade
-
+/*
 smmObjGrade_e generateRandomGrade(void)
 {
     smmObjGrade_e grades[] = {smmObjGrade_Ap, smmObjGrade_A0, smmObjGrade_Am,
@@ -164,6 +164,7 @@ smmObjGrade_e generateRandomGrade(void)
                               smmObjGrade_Cp, smmObjGrade_C0, smmObjGrade_Cm};
     return grades[rand() % (sizeof(grades) / sizeof(grades[0]))];
 }
+*/
 
 
 // takeLectureAction : lecture condition check & generate grade
@@ -194,7 +195,7 @@ void takeLectureAction(int player, void *boardPtr)
         void *gradePtr = smmObj_genObject(smmObj_getName(boardPtr), smmObjType_grade, 0, lectureCredit, 0, randomGrade);
         smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
         
-        printf("You have successfully taken the lecture: %s\nGrade:  %s ( %i ) \n", smmObj_getName(boardPtr), gradeToString(randomGrade), randomGrade);
+        printf("You have successfully taken the lecture: %s\nGrade:  %s \n", smmObj_getName(boardPtr), gradeToString(randomGrade));
         cur_player[player].accumCredit += lectureCredit;
         cur_player[player].energy -= lectureEnergy;
     }

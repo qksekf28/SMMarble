@@ -40,15 +40,15 @@ typedef enum smmObjGrade {
 // gradeToString definition
 const char* gradeToString(smmObjGrade_e grade) {
     switch (grade) {
-        case smmObjGrade_Ap: return "Ap";
-        case smmObjGrade_A0: return "A0";
-        case smmObjGrade_Am: return "Am";
-        case smmObjGrade_Bp: return "Bp";
-        case smmObjGrade_B0: return "B0";
-        case smmObjGrade_Bm: return "Bm";
-        case smmObjGrade_Cp: return "Cp";
-        case smmObjGrade_C0: return "C0";
-        case smmObjGrade_Cm: return "Cm";
+        case smmObjGrade_Ap: return "A+ (4.3)";
+        case smmObjGrade_A0: return "A0 (4.0)";
+        case smmObjGrade_Am: return "A- (3.7)";
+        case smmObjGrade_Bp: return "B+ (3.3)";
+        case smmObjGrade_B0: return "B0 (3.0)";
+        case smmObjGrade_Bm: return "B- (2.7)";
+        case smmObjGrade_Cp: return "C+ (2.3)";
+        case smmObjGrade_C0: return "C0 (2.0)";
+        case smmObjGrade_Cm: return "C- (1.7)";
         default: return "Unknown";
     }
 }
