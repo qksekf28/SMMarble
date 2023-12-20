@@ -4,6 +4,9 @@
 //
 //  Created by Juyeop Kim on 2023/11/05.
 //
+//----------------------------------------------
+// LAST ONE BEFORE RESET
+//----------------------------------------------
 
 #ifndef smm_common_h
 #define smm_common_h

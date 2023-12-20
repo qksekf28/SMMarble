@@ -4,6 +4,9 @@
 //
 //  Created by Juyeop Kim on 2023/11/05.
 //
+//----------------------------------------------
+// LAST ONE BEFORE RESET
+//----------------------------------------------
 
 #include <time.h>
 #include <string.h>
@@ -153,7 +156,7 @@ void generatePlayer(int n, int initEnergy)
 //action code when a player stays at a node
 void actionNode(int player)
 {
-    void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position );
+    void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
     //int type = smmObj_getNodeType( cur_player[player].position );
     int type = smmObj_getNodeType(boardPtr); //passing argument 1 of 'smmObj_getNodeType' makes integer from pointer without a cast
     char *name = smmObj_getNodeName(boardPtr);
@@ -164,11 +167,11 @@ void actionNode(int player)
         //case lecture:
         case SMMNODE_TYPE_LECTURE:
 //           if 
-            cur_player[player].accumCredit += smmObj_getNodeCredit( boardPtr );
-            cur_player[player].energy -= smmObj_getNodeEnergy( boardPtr );
+            cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
+            cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
             
             //grade generation
-            gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit( boardPtr ), 0, smmObjGrade_Ap);
+            gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, smmObjGrade_Ap);
             smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
             
             break;
