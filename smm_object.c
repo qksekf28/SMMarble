@@ -36,7 +36,7 @@ typedef struct smmObject {
        char name[MAX_CHARNAME];
        smmObjType_e objType; 
        int type;
-       int credit;
+       int credit; // storing each object's course
        int energy;
        smmObjGrade_e grade;
 } smmObject_t;
@@ -66,7 +66,7 @@ void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, i
     strcpy(ptr->name, name);
     ptr->objType = objType;
     ptr->type = type;
-    ptr->credit = credit;
+    ptr->credit = credit; // storing course history inform.
     ptr->energy = energy;
     ptr->grade = grade;
     

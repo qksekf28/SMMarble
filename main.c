@@ -53,6 +53,7 @@ float calcAverageGrade(int player); //calculate average grade of the player
 smmGrade_e takeLecture(int player, char *lectureName, int credit); //take the lecture (insert a grade of the player)
 void* findGrade(int player, char *lectureName); //find the grade from the player's grade history
 void printGrades(int player); //print all the grade history of the player
+void takeLectureAction(int player, void *boardPtr);
 #endif
 
 
@@ -130,31 +131,101 @@ int rolldie(int player)
     return (rand()%MAX_DIE + 1);
 }
 
-//action code when a player stays at a node
+
+// findGrade: Find and return the grade corresponding to the given player and lecture name
+void* findGrade(int player, const char *lectureName)
+{
+    int i;
+    void *gradePtr;
+
+    // Iterate through the player's grade list and compare lecture names
+    for (i = 0; i < smmdb_len(LISTNO_OFFSET_GRADE + player); i++)
+    {
+        gradePtr = smmdb_getData(LISTNO_OFFSET_GRADE + player, i);
+
+        // Return the grade if the lecture name matches
+        if (strcmp(smmObj_getName(gradePtr), lectureName) == 0)
+        {
+            return gradePtr;
+        }
+    }
+
+    // Return NULL if no grade corresponding to the lecture name is found
+    return NULL;
+}
+
+
+// generate random grade
+
+smmObjGrade_e generateRandomGrade(void)
+{
+    smmObjGrade_e grades[] = {smmObjGrade_Ap, smmObjGrade_A0, smmObjGrade_Am,
+                              smmObjGrade_Bp, smmObjGrade_B0, smmObjGrade_Bm,
+                              smmObjGrade_Cp, smmObjGrade_C0, smmObjGrade_Cm};
+    return grades[rand() % (sizeof(grades) / sizeof(grades[0]))];
+}
+
+
+// takeLectureAction : lecture condition check & generate grade
+void takeLectureAction(int player, void *boardPtr)
+{
+    int lectureEnergy = smmObj_getEnergy(boardPtr);
+    int lectureCredit = smmObj_getCredit(boardPtr);
+
+    if (cur_player[player].energy < lectureEnergy)
+    {
+        printf("Not enough energy to take the lecture: %s\n", smmObj_getName(boardPtr));
+        return;
+    }
+
+    if (findGrade(player, smmObj_getName(boardPtr)) != NULL)
+    {
+        printf("You have already taken this lecture: %s\n", smmObj_getName(boardPtr));
+        return;
+    }
+
+    char answer;
+    printf("Do you want to take the lecture (y/n)? ");
+    scanf(" %c", &answer);
+
+    if (answer == 'y' || answer == 'Y')
+    {
+        smmObjGrade_e randomGrade = (smmObjGrade_e)(rand() % 9);
+        void *gradePtr = smmObj_genObject(smmObj_getName(boardPtr), smmObjType_grade, 0, lectureCredit, 0, randomGrade);
+        smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
+        
+        printf("You have successfully taken the lecture: %s\nGrade:  %s ( %i ) \n", smmObj_getName(boardPtr), gradeToString(randomGrade), randomGrade);
+        cur_player[player].accumCredit += lectureCredit;
+        cur_player[player].energy -= lectureEnergy;
+    }
+    else
+    {
+        printf("You have chosen to drop the lecture: %s\n", smmObj_getName(boardPtr));
+    }
+}
+
+
 void actionNode(int player)
 {
-    void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position );
-    int type = smmObj_getNodeType( boardPtr );
-    char *name = smmObj_getName( boardPtr );
-    void *gradePtr;
-    
-    switch(type)
+    void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
+    int type = smmObj_getNodeType(boardPtr);
+
+    switch (type)
     {
-        //case lecture:
         case SMMNODE_TYPE_LECTURE:
-            cur_player[player].accumCredit += smmObj_getCredit( boardPtr );
-            cur_player[player].energy -= smmObj_getEnergy( boardPtr );
-            
-            //grade generation
-            gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getCredit( boardPtr ), 0, smmObjGrade_Ap);
-            smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
-            
+            takeLectureAction(player, boardPtr);
             break;
-            
+
+        // Another Type Node
+
         default:
+            // 
             break;
     }
 }
+
+
+
 
 void goForward(int player, int step)
 {

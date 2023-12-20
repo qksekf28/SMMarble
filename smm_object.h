@@ -36,6 +36,23 @@ typedef enum smmObjGrade {
     smmObjGrade_Cm
 } smmObjGrade_e;
 
+
+// gradeToString definition
+const char* gradeToString(smmObjGrade_e grade) {
+    switch (grade) {
+        case smmObjGrade_Ap: return "Ap";
+        case smmObjGrade_A0: return "A0";
+        case smmObjGrade_Am: return "Am";
+        case smmObjGrade_Bp: return "Bp";
+        case smmObjGrade_B0: return "B0";
+        case smmObjGrade_Bm: return "Bm";
+        case smmObjGrade_Cp: return "Cp";
+        case smmObjGrade_C0: return "C0";
+        case smmObjGrade_Cm: return "Cm";
+        default: return "Unknown";
+    }
+}
+
 /* node type :
     lecture,
     restaurant,

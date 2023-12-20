@@ -98,6 +98,7 @@ static int updateIndex(int list_nr)
                 3. make the last node's next pointer to point the new node
                 4. update the index
 */
+// Storing each course history
 int smmdb_addTail(int list_nr, void* obj)
 {
     node_t* ndPtr;
