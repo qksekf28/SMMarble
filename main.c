@@ -154,6 +154,12 @@ void* findGrade(int player, const char *lectureName)
     return NULL;
 }
 
+//------------------------------------
+int isInExperiment(int player) {
+    void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
+    return smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_GOTOLAB;
+}
+//------------------------------------
 
 // generate random grade
 smmObjGrade_e generateRandomGrade(void)
@@ -203,33 +209,6 @@ void takeLectureAction(int player, void *boardPtr)
 }
 
 
-void actionNode(int player)
-{
-    void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
-    int type = smmObj_getNodeType(boardPtr);
-
-    switch (type)
-    {
-        case SMMNODE_TYPE_LECTURE:
-            takeLectureAction(player, boardPtr);
-            break;
-            
-        case SMMNODE_TYPE_RESTAURANT:
-        	// current energy + getenergy of food
-            printf("  -> %s went to a restaurant(%s). Energy replenished by %d.\n",
-								cur_player[player].name, smmObj_getName(boardPtr), smmObj_getEnergy(boardPtr));
-            cur_player[player].energy += smmObj_getEnergy(boardPtr);
-            break;
-        // Another Type Node
-
-        default:
-            // 
-            break;
-    }
-}
-
-
-
 
 void goForward(int player, int step)
 {
@@ -256,6 +235,60 @@ void goForward(int player, int step)
                 cur_player[player].name, cur_player[player].position,
                 smmObj_getName(boardPtr));
 }
+
+
+
+
+void actionNode(int player)
+{
+    void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
+    int type = smmObj_getNodeType(boardPtr);
+
+    switch (type)
+    {
+        case SMMNODE_TYPE_LECTURE:
+            takeLectureAction(player, boardPtr);
+            break;
+            
+        case SMMNODE_TYPE_RESTAURANT:
+        	// current energy + getenergy of food
+            printf("  -> %s went to a restaurant(%s). Energy replenished by %d.\n",
+								cur_player[player].name, smmObj_getName(boardPtr), smmObj_getEnergy(boardPtr));
+            cur_player[player].energy += smmObj_getEnergy(boardPtr);
+            break;
+            
+        case SMMNODE_TYPE_LABORATORY:
+            if (isInExperiment(player)) {
+                // Experiment START
+                int threshold = 3;
+                int diceResult = rand() % MAX_DIE + 1;
+                if (diceResult >= threshold) {
+                    printf(" -> %s가 실험에 성공했습니다.\n", cur_player[player].name);
+                    // Experiment SUCCESS -> 추가 동작
+                } else {
+                    printf(" -> %s가 실험에 실패했습니다. 실험 중 상태로 남습니다.\n", cur_player[player].name);
+                }
+            } else {
+                printf(" -> %s는 연구소에 도착했습니다. 실험 중 상태로 전환됩니다.\n", cur_player[player].name);
+                // 실험 중 상태로 변경하는 추가 동작
+            }
+            break;
+
+        case SMMNODE_TYPE_GOTOLAB:
+            // 실험 중 상태로 전환되면서 연구소로 이동
+            printf(" -> %s가 실험 중 상태로 전환되어 연구소로 이동합니다.\n", cur_player[player].name);
+            goForward(player, 2);  // 연구소에서 실험 중 상태로 이동
+            break;
+        // Another Type Node
+
+        default:
+            // 
+            break;
+    }
+}
+
+
+
 
 
 int main(int argc, const char * argv[]) {
