@@ -156,7 +156,6 @@ void* findGrade(int player, const char *lectureName)
 
 
 // generate random grade
-/*
 smmObjGrade_e generateRandomGrade(void)
 {
     smmObjGrade_e grades[] = {smmObjGrade_Ap, smmObjGrade_A0, smmObjGrade_Am,
@@ -164,8 +163,6 @@ smmObjGrade_e generateRandomGrade(void)
                               smmObjGrade_Cp, smmObjGrade_C0, smmObjGrade_Cm};
     return grades[rand() % (sizeof(grades) / sizeof(grades[0]))];
 }
-*/
-
 
 // takeLectureAction : lecture condition check & generate grade
 void takeLectureAction(int player, void *boardPtr)
@@ -191,7 +188,7 @@ void takeLectureAction(int player, void *boardPtr)
 
     if (answer == 'y' || answer == 'Y')
     {
-        smmObjGrade_e randomGrade = (smmObjGrade_e)(rand() % 9);
+        smmObjGrade_e randomGrade = generateRandomGrade();
         void *gradePtr = smmObj_genObject(smmObj_getName(boardPtr), smmObjType_grade, 0, lectureCredit, 0, randomGrade);
         smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
         
@@ -216,7 +213,13 @@ void actionNode(int player)
         case SMMNODE_TYPE_LECTURE:
             takeLectureAction(player, boardPtr);
             break;
-
+            
+        case SMMNODE_TYPE_RESTAURANT:
+        	// current energy + getenergy of food
+            printf("  -> %s went to a restaurant(%s). Energy replenished by %d.\n",
+								cur_player[player].name, smmObj_getName(boardPtr), smmObj_getEnergy(boardPtr));
+            cur_player[player].energy += smmObj_getEnergy(boardPtr);
+            break;
         // Another Type Node
 
         default:
