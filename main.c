@@ -166,7 +166,14 @@ void goForward(int player, int step)
                 smmObj_getName(boardPtr));
 				
 	 //---Player is MOVING---
-     cur_player[player].position += step;
+	 int i;
+		for (i = 0; i < step; i++)
+		// Print ALL the name of each node the player passes through
+	        printf("%s is passing node %i (name: %s)\n",
+	               cur_player[player].name, cur_player[player].position + i + 1,
+	               smmObj_getName(smmdb_getData(LISTNO_NODE, cur_player[player].position + i + 1)));
+	    
+	     cur_player[player].position += step;
      
      //---UPDATE boardPtr to CHANGED POSITION
      boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position ); // <-- necessary for Chage
@@ -289,6 +296,11 @@ int main(int argc, const char * argv[]) {
 	printf("\n  Sookmyung Marble !! Let me Graduate (total credit : 30)......  T_T   \n");
 	printf("\n****---------------------------------------------------------------****\n");
 	printf("\n=======================================================================\n");
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("\n");
 	
     do
     {
@@ -317,8 +329,8 @@ int main(int argc, const char * argv[]) {
         printf("\n");
         
         //4-2. die rolling (if not in experiment)        
-        die_result = rolldie(turn);
-        printf("This is >> %s << turn\n", cur_player[turn].name);
+        printf("This is >> %s << turn ::: \n", cur_player[turn].name);
+		die_result = rolldie(turn);
         printf("RESULT of rolling die is %d\n", die_result);
 
         //4-3. go forward
