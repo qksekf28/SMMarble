@@ -4,9 +4,6 @@
 //  Database platform code for storing marble board elements
 //  Created by Juyeop Kim on 2023/11/05.
 //
-//----------------------------------------------
-// LAST ONE BEFORE RESET
-//----------------------------------------------
 
 #include "smm_common.h"
 #include "smm_database.h"
@@ -225,3 +222,4 @@ void* smmdb_getData(int list_nr, int index)
     
     return obj;
 }
+

@@ -4,9 +4,6 @@
 //
 //  Created by Juyeop Kim on 2023/11/05.
 //
-//----------------------------------------------
-// LAST ONE BEFORE RESET
-//----------------------------------------------
 
 #ifndef smm_common_h
 #define smm_common_h
@@ -14,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_CHARNAME                200 // define every string length to 200
+#define MAX_CHARNAME                200
 
 #define GRADUATE_CREDIT             30
 #define MAX_DIE                     6
@@ -22,3 +19,4 @@
 
 
 #endif /* smm_common_h */
+

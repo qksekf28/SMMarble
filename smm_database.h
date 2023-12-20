@@ -4,9 +4,6 @@
 //
 //  Created by Juyeop Kim on 2023/11/05.
 //
-//----------------------------------------------
-// LAST ONE BEFORE RESET
-//----------------------------------------------
 
 #ifndef smm_database_h
 #define smm_database_h
@@ -22,3 +19,4 @@ int smmdb_len(int list_nr);                   //get database length
 void* smmdb_getData(int list_nr, int index);        //get index'th data
 
 #endif /* smm_database_h */
+
