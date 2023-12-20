@@ -70,14 +70,18 @@ void printGrades(int player)
 void printPlayerStatus(void)
 {
      int i;
-     
+
      for (i=0;i<player_nr;i++)
+     // print as player number
      {
-         printf("%s : credit %i, energy %i, position %i\n", 
+         printf("%s at position %i,credit %i, energy %i\n", 
                       cur_player[i].name,
+                      cur_player[i].position,
                       cur_player[i].accumCredit,
-                      cur_player[i].energy,
-                      cur_player[i].position);
+                      cur_player[i].energy);
+    	
+		//void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[i].position);
+        //printf("Board Name at current position: %s\n", smmObj_getName(boardPtr));
      }
 }
 
@@ -90,12 +94,12 @@ void generatePlayers(int n, int initEnergy) //generate a new player
      for (i=0;i<n;i++)
      {
          //input name
-         printf("Input player %i's name:", i); // input player no.:
+         printf("Input player No.%i's name:", i); // input player no.:
          scanf("%s", cur_player[i].name);
          fflush(stdin);
          
          //--------------------------------------------------------
-         printf("input done\n");
+         //printf("input done\n");
          //--------------------------------------------------------
          
          //set position
@@ -155,9 +159,14 @@ void actionNode(int player)
 void goForward(int player, int step)
 {
      void *boardPtr;
-     cur_player[player].position += step;
+
      boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position );
-     
+     printf("%s is at node %i (name: %s)\n", 
+                cur_player[player].name, cur_player[player].position,
+                smmObj_getName(boardPtr));
+    
+     cur_player[player].position += step;
+                
      printf("%s go to node %i (name: %s)\n", 
                 cur_player[player].name, cur_player[player].position,
                 smmObj_getName(boardPtr));
@@ -282,7 +291,7 @@ int main(int argc, const char * argv[]) {
     {
         //input player number to player_nr
         // This is where 1st input print
-        printf("input player no.:");
+        printf("input no. of player(1~10):");
         scanf("%d", &player_nr);
         fflush(stdin);
     }
@@ -298,11 +307,17 @@ int main(int argc, const char * argv[]) {
         
         
         //4-1. initial printing
+        printf("\n");
+        printf("========================== PLAYER STATUS ==========================\n");
         printPlayerStatus();
+        printf("========================== PLAYER STATUS ==========================\n");
+        printf("\n");
         
         //4-2. die rolling (if not in experiment)        
         die_result = rolldie(turn);
-        
+        printf("This is >> %s << turn\n", cur_player[turn].name);
+        printf("RESULT of rolling die is %d\n", die_result);
+
         //4-3. go forward
         goForward(turn, die_result);
 
