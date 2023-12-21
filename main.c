@@ -24,6 +24,7 @@ static int festival_nr;
 
 static int player_nr;
 
+int turn=0;
 
 typedef struct player  //combining several variables of different types
 {
@@ -203,11 +204,10 @@ void takeLectureAction(int player, void *boardPtr)
 }
 
 
-//-------------------------------------------------------
+//=========================================================
 // For SMMNODE_TYPE_FOODCHANCE 5
 //	-> handleFoodChance : get random food card & display FOOD/ENERGY & update energy status
-//-------------------------------------------------------
-
+//=========================================================
 void handleFoodChance(int player)
 {
 	char food_name[MAX_CHARNAME];
@@ -221,8 +221,8 @@ void handleFoodChance(int player)
         return;
     }
 
-    // coun number of food items
-    int food_nr = 0;
+    // count number of food items
+    int food_nr = 0; // but it's already static int
     while (fscanf(fp_food, "%s %*d", food_name) == 1) {
         food_nr++;
     }
@@ -248,6 +248,56 @@ void handleFoodChance(int player)
     printf("  -> %s got a food card: %s. Energy increased by %d.\n", cur_player[player].name, food_name, food_energy);
     cur_player[player].energy += food_energy;
 }
+//=========================================================
+
+
+
+//=========================================================
+// For SMMNODE_TYPE_FESTIVAL 6
+//	-> handleFestival : get random food card & display FOOD/ENERGY & update energy status
+//=========================================================
+void handleFestival(int player)
+{
+    printf("%s landed on a Festival node!\n", cur_player[player].name);
+
+    // read mission parameter from marbleFestConfig.txt
+    FILE *fp_festival;
+    if ((fp_festival = fopen(FESTFILEPATH, "r")) == NULL)
+    {
+        printf("[ERROR] failed to open %s. Check the file path.\n", FESTFILEPATH);
+        return;
+    }
+
+    // count number of mission
+    int randomMissionIndex = rand() % festival_nr;
+
+    if ((fp_festival = fopen(FESTFILEPATH, "r")) == NULL)
+    {
+        printf("[ERROR] failed to open %s. Check the file path.\n", FESTFILEPATH);
+        return;
+    }
+
+    // Read CHOSEN random food item
+    int i;
+    char festivalMission[MAX_CHARNAME];
+    for (i = 0; i <= randomMissionIndex; i++)
+    {
+        fscanf(fp_festival, "%s", festivalMission);
+    }
+    fclose(fp_festival);
+
+    // ---MISSION-ing---
+    printf("MISSION : %s\n", festivalMission);
+    printf("(Press any key when mission is ended.)  <3 \n");
+    getchar(); // Waiting for answer
+
+    // 각각 축제 미션에 대한 동작
+	// 따로 입력 안해도 되는 것 같아서 다음 순서로 패스 
+    turn = (turn + 1) % player_nr;
+}
+//=========================================================
+
+
 
 void actionNode(int player)
 {
@@ -270,6 +320,10 @@ void actionNode(int player)
             
         case SMMNODE_TYPE_FOODCHANCE:
         	handleFoodChance(player);
+        	break;
+        	
+        case SMMNODE_TYPE_FESTIVAL:
+        	handleFestival(player);
         	break;
         // Another Type Node
 
@@ -323,7 +377,7 @@ int main(int argc, const char * argv[]) {
     int energy;
     int i;
     int initEnergy;
-    int turn=0;
+    //int turn=0;
     
     board_nr = 0;
     food_nr = 0; // Role: Counter for numbering food items
