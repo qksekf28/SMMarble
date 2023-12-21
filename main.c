@@ -6,13 +6,13 @@
 //
 //=========================================
 // UNSOLVED PROBLEM
-// -> 단순 30을 넘기는게 아니라 30도 넘기고 집도 가야 종료 
+// -> 단순 30을 넘기는게 아니라 30도 넘기고 집도 가야 종료 => SOLVED
 //=========================================
 
 #include <time.h>
 #include <string.h>
 #include "smm_object.h"
-#include "smm_database.h"
+#include "smm_database.h"8
 #include "smm_common.h"
 
 #define BOARDFILEPATH "marbleBoardConfig.txt"
@@ -123,17 +123,8 @@ void printPlayerStatus(void)
                cur_player[i].energy,
 			   (cur_player[i].flag_graduate == 1) ? "Graduated" : "Not Graduated",
                calcAverageGrade(i));
-        
         printGrades(i);
         printf("\n");
-          
-        //printf("Board Name at current position: %s\n", smmObj_getName(boardPtr));
-        //printf("Experimental Status: %s\n", (cur_player[i].flag_graduate == 1) ? "Graduated" : "Not Graduated");
-        // 평균 학점은 조금 나중에 하겠음 
-		//printf("Average Grade: %.2f\n", calcAverageGrade(i));
-        //printf("Grade History:\n");
-        //printGrades(i);
-        //printf("\n");
     }
 }
 //=========================================================
@@ -145,26 +136,11 @@ void printPlayerStatus(void)
 //=========================================================
 int isGraduated(int player)
 {
-    // 주어진 플레이어가 학점을 쌓은 후에 다시 첫 번째 노드를 지나면 게임 종료
     if (cur_player[player].accumCredit >= GRADUATE_CREDIT && cur_player[player].position == 0) {
-        return 1; // 해당 플레이어가 종료 조건을 만족하면 1 반환
+        return 1; // Condition satisfy -> 1
     }
-    return 0; // 종료 조건을 만족하지 않으면 0 반환
+    return 0; // Not yet -> 0
 }
-
-/*
-int isGraduated(void)
-{
-    int i;
-    for (i = 0; i < player_nr; i++) {
-        if (cur_player[i].accumCredit >= GRADUATE_CREDIT && cur_player[i].position == 0) {
-            return 1;
-			// At least one player has graduated and is at the first node
-        }
-    }
-    return 0;
-	// No player has graduated and is at the first node
-} */
 //=========================================================
 
 
@@ -173,31 +149,24 @@ void generatePlayers(int n, int initEnergy) //generate a new player
      int i;
      //n time loop
      
-     
      for (i=0;i<n;i++)
      {
          //input name
          printf("Input player No.%i's name:", i); // input player no.:
          scanf("%s", cur_player[i].name);
          fflush(stdin);
-         
-         //--------------------------------------------------------
-         //printf("input done\n");
-         //--------------------------------------------------------
-         
-         //set position
-         //player_position[i] = 0;
+
+         //set current position/energy/accumCredit/flag_graduate
          cur_player[i].position = 0;
-         
-         //set energy
-         //player_energy[i] = initEnergy;
          cur_player[i].energy = initEnergy;
          cur_player[i].accumCredit = 0;
          cur_player[i].flag_graduate = 0;
      }
 }
 
-
+//=========================================================
+// DICE
+//=========================================================
 int rolldie(int player)
 {
     char c;
@@ -212,6 +181,7 @@ int rolldie(int player)
     
     return (rand()%MAX_DIE + 1);
 }
+//=========================================================
 
 
 // findGrade: Find and return the grade corresponding to the given player and lecture name
@@ -372,14 +342,12 @@ void handleFestival(int player)
     printf("(Press any key when mission is ended.)  <3 \n");
     getchar(); // Waiting for answer
 
-    // ???? ???? ???? ???? ????
-	// ???? ??? ????? ??? ?? ????? ???? ?????? ?н? 
     turn = (turn + 1) % player_nr;
 }
 //=========================================================
 
 
-
+//=========================================================
 void actionNode(int player)
 {
     void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
@@ -398,6 +366,10 @@ void actionNode(int player)
 								cur_player[player].name, smmObj_getName(boardPtr), smmObj_getEnergy(boardPtr));
             cur_player[player].energy += smmObj_getEnergy(boardPtr);
             break;
+        
+        case SMMNODE_TYPE_HOME:
+        	cur_player[player].energy += REPLENISH_ENERGY_AMOUNT;
+            break;
             
         case SMMNODE_TYPE_FOODCHANCE:
         	handleFoodChance(player);
@@ -407,18 +379,14 @@ void actionNode(int player)
         	handleFestival(player);
         	break;
         	
-        case SMMNODE_TYPE_HOME:
-        	cur_player[player].energy += REPLENISH_ENERGY_AMOUNT;
-            break;
         // Another Type Node
 
         default:
-            // 
-            break;
+    
+	break;
     }
 }
-
-
+//=========================================================
 
 
 void goForward(int player, int step)
