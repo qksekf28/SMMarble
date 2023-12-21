@@ -71,6 +71,8 @@ const char* gradeToString(smmObjGrade_e grade) {
 //static smmObject_t smm_node[MAX_NODE];
 //static int smmObj_noNode = 0;
 
+
+
 //object generation 
 // 3. related function CHANGE
 void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)

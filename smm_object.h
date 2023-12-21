@@ -81,7 +81,6 @@ const char* gradeToString(smmObjGrade_e grade) {
 */
 
 
-
 //object generation
 void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
 

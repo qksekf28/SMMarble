@@ -8,9 +8,9 @@
 #ifndef smm_database_h
 #define smm_database_h
 
-#define LISTNO_NODE             0
-#define LISTNO_FOODCARD         1
-#define LISTNO_FESTCARD         2
+#define LISTNO_NODE             0	// node list number 
+#define LISTNO_FOODCARD         1	// food card list number 
+#define LISTNO_FESTCARD         2	// festival card list number 
 #define LISTNO_OFFSET_GRADE     3
 
 int smmdb_addTail(int list_nr, void* obj);          //add data to tail

@@ -15,7 +15,7 @@
 #define FOODFILEPATH "marbleFoodConfig.txt"
 #define FESTFILEPATH "marbleFestivalConfig.txt"
 
-
+#define REPLENISH_ENERGY_AMOUNT 18
 
 //board configuration parameters
 static int board_nr;
@@ -69,23 +69,70 @@ void printGrades(int player)
      }
 }
 
+//=========================================================
+// For PlayerStatus
+// -> calcAverageGrade : 
+// -> printPlayerStatus : 턴 시작 시 모든 플레이어의 상태 (위치, 실험 중 상태, 누적 학점, 현재 에너지)를 출력해야 함
+//=========================================================
+float calcAverageGrade(int player)
+{
+    int i;
+    float totalGrade = 0.0;
+
+    // 학점 기록의 개수가 0인 경우 평균 학점은 0.0
+    if (smmdb_len(LISTNO_OFFSET_GRADE + player) == 0)
+    {
+        return 0.0;
+    }
+
+    // SUM every credit
+    for (i = 0; i < smmdb_len(LISTNO_OFFSET_GRADE + player); i++)
+    {
+        void *gradePtr = smmdb_getData(LISTNO_OFFSET_GRADE + player, i);
+        totalGrade += smmObj_getGrade(gradePtr);
+    }
+
+    // calculate average grade
+    return totalGrade / smmdb_len(LISTNO_OFFSET_GRADE + player);
+}
+
+
 void printPlayerStatus(void)
 {
-     int i;
+    int i;
 
-     for (i=0;i<player_nr;i++)
-     // print as player number
-     {
-         printf("%s at position %i,credit %i, energy %i\n", 
-                      cur_player[i].name,
-                      cur_player[i].position,
-                      cur_player[i].accumCredit,
-                      cur_player[i].energy);
-    	
+    for (i = 0; i < player_nr; i++)
+    // print as player number
+    {   
 		//void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[i].position);
         //printf("Board Name at current position: %s\n", smmObj_getName(boardPtr));
-     }
+        //%s at position %i, credit %i, energy %i\n
+        void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[i].position);
+        
+        printf("%s at position %i.%s, credit %i, energy %i\n"
+        	   "Average Grade: %.2f\n"
+               "Grade History:\n",
+               cur_player[i].name,
+               cur_player[i].position,
+               smmObj_getName(smmdb_getData(LISTNO_NODE, cur_player[i].position)),
+               cur_player[i].accumCredit,
+               cur_player[i].energy,
+			   (cur_player[i].flag_graduate == 1) ? "Graduated" : "Not Graduated",
+               calcAverageGrade(i));
+        
+        printGrades(i);
+        printf("\n");
+          
+        //printf("Board Name at current position: %s\n", smmObj_getName(boardPtr));
+        //printf("Experimental Status: %s\n", (cur_player[i].flag_graduate == 1) ? "Graduated" : "Not Graduated");
+        // 평균 학점은 조금 나중에 하겠음 
+		//printf("Average Grade: %.2f\n", calcAverageGrade(i));
+        //printf("Grade History:\n");
+        //printGrades(i);
+        //printf("\n");
+    }
 }
+//=========================================================
 
 void generatePlayers(int n, int initEnergy) //generate a new player
 {
@@ -325,6 +372,10 @@ void actionNode(int player)
         case SMMNODE_TYPE_FESTIVAL:
         	handleFestival(player);
         	break;
+        	
+        case SMMNODE_TYPE_HOME:
+        	cur_player[player].energy += REPLENISH_ENERGY_AMOUNT;
+            break;
         // Another Type Node
 
         default:
@@ -340,7 +391,7 @@ void goForward(int player, int step)
 {
      void *boardPtr;
 
-     boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position );
+	 boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position );
      printf("%s is at node %i (name: %s)\n", 
                 cur_player[player].name, cur_player[player].position,
                 smmObj_getName(boardPtr));
@@ -348,12 +399,23 @@ void goForward(int player, int step)
 	 //---Player is MOVING---
 	 int i;
 		for (i = 0; i < step; i++)
+		{
+        	// Print ALL the name of each node the player passes through
+        	cur_player[player].position = (cur_player[player].position + 1) % board_nr;
+			// Wrap around to the first node if reaching the last node
+        	printf("%s is passing node %i (name: %s)\n",
+            cur_player[player].name, cur_player[player].position,
+            smmObj_getName(smmdb_getData(LISTNO_NODE, cur_player[player].position)));
+    	}
+		
+		/*
 		// Print ALL the name of each node the player passes through
 	        printf("%s is passing node %i (name: %s)\n",
 	               cur_player[player].name, cur_player[player].position + i + 1,
 	               smmObj_getName(smmdb_getData(LISTNO_NODE, cur_player[player].position + i + 1)));
 	    
 	     cur_player[player].position += step;
+	     */
      
      //---UPDATE boardPtr to CHANGED POSITION
      boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position ); // <-- necessary for Chage

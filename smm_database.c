@@ -4,6 +4,12 @@
 //  Database platform code for storing marble board elements
 //  Created by Juyeop Kim on 2023/11/05.
 //
+// list는 node position
+// len은 node 개수
+//=========================================
+// UNSOLVED PROBLEM
+// -> last node 뒤에 first node를 안이어줘서 생기는 오류네!!! 
+//=========================================
 
 #include "smm_common.h"
 #include "smm_database.h"
@@ -16,7 +22,7 @@ typedef struct node{
     int index;      //index of the node
     void* obj;      //object data
     void* next;         //pointer to the next
-    void* prev;         //pointer to the next
+    void* prev;         //pointer to the next->previous maybe
 } node_t;
 
 
@@ -223,4 +229,5 @@ void* smmdb_getData(int list_nr, int index)
     
     return obj;
 }
+
 
