@@ -4,6 +4,10 @@
 //
 //  Created by Juyeop Kim on 2023/11/05.
 //
+//=========================================
+// UNSOLVED PROBLEM
+// -> 단순 30을 넘기는게 아니라 30도 넘기고 집도 가야 종료 
+//=========================================
 
 #include <time.h>
 #include <string.h>
@@ -71,7 +75,7 @@ void printGrades(int player)
 
 //=========================================================
 // For PlayerStatus
-// -> calcAverageGrade : 
+// -> calcAverageGrade : 학점 평균 계산 
 // -> printPlayerStatus : 턴 시작 시 모든 플레이어의 상태 (위치, 실험 중 상태, 누적 학점, 현재 에너지)를 출력해야 함
 //=========================================================
 float calcAverageGrade(int player)
@@ -133,6 +137,36 @@ void printPlayerStatus(void)
     }
 }
 //=========================================================
+
+
+//=========================================================
+// For GRADUATE
+// -> isGraduated : check condition(accumCredit & position)
+//=========================================================
+int isGraduated(int player)
+{
+    // 주어진 플레이어가 학점을 쌓은 후에 다시 첫 번째 노드를 지나면 게임 종료
+    if (cur_player[player].accumCredit >= GRADUATE_CREDIT && cur_player[player].position == 0) {
+        return 1; // 해당 플레이어가 종료 조건을 만족하면 1 반환
+    }
+    return 0; // 종료 조건을 만족하지 않으면 0 반환
+}
+
+/*
+int isGraduated(void)
+{
+    int i;
+    for (i = 0; i < player_nr; i++) {
+        if (cur_player[i].accumCredit >= GRADUATE_CREDIT && cur_player[i].position == 0) {
+            return 1;
+			// At least one player has graduated and is at the first node
+        }
+    }
+    return 0;
+	// No player has graduated and is at the first node
+} */
+//=========================================================
+
 
 void generatePlayers(int n, int initEnergy) //generate a new player
 {
@@ -583,8 +617,16 @@ int main(int argc, const char * argv[]) {
         
         //4-5. next turn
         turn = (turn + 1)%player_nr;
+        
+        
+        // Check if the current player has graduated and is at the first node
+		if (isGraduated(turn))
+		{
+		    printf("Game over! Player %s has graduated and is at the first node.\n", cur_player[turn].name);
+		    break; // End the game
+		}
+        
     }
-    
     
     free(cur_player);
     system("PAUSE");

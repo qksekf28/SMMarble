@@ -8,7 +8,7 @@
 // len은 node 개수
 //=========================================
 // UNSOLVED PROBLEM
-// -> last node 뒤에 first node를 안이어줘서 생기는 오류네!!! 
+// -> last node 뒤에 first node를 안이어줘서 생기는 오류네!!! => SOLVED
 //=========================================
 
 #include "smm_common.h"
