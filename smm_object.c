@@ -15,8 +15,8 @@
 
 
 static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = {
-	"**LECTURE**",
-	"**RESTAURANT**",
+   "**LECTURE**",
+   "**RESTAURANT**",
     "**LABORATORY**",
     "**HOME**",
     "**MOVE to LAB**",
@@ -50,6 +50,22 @@ typedef struct smmObject
     int energy;
 } smmObject_t;
 */
+
+const char* gradeToString(smmObjGrade_e grade) {
+    switch (grade) {
+        case smmObjGrade_Ap: return "A+ (4.3)";
+        case smmObjGrade_A0: return "A0 (4.0)";
+        case smmObjGrade_Am: return "A- (3.7)";
+        case smmObjGrade_Bp: return "B+ (3.3)";
+        case smmObjGrade_B0: return "B0 (3.0)";
+        case smmObjGrade_Bm: return "B- (2.7)";
+        case smmObjGrade_Cp: return "C+ (2.3)";
+        case smmObjGrade_C0: return "C0 (2.0)";
+        case smmObjGrade_Cm: return "C- (1.7)";
+        default: return "Unknown";
+    }
+}
+
 
 // 2. STRUCT ARRAY VARIABLE definition
 //static smmObject_t smm_node[MAX_NODE];
@@ -109,4 +125,3 @@ int smmObj_getGrade(void* obj)
     
     return ptr->grade;
 }
-

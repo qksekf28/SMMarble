@@ -38,6 +38,8 @@ typedef enum smmObjGrade {
 
 
 // gradeToString definition
+const char* gradeToString(smmObjGrade_e grade);
+/*
 const char* gradeToString(smmObjGrade_e grade) {
     switch (grade) {
         case smmObjGrade_Ap: return "A+ (4.3)";
@@ -52,6 +54,8 @@ const char* gradeToString(smmObjGrade_e grade) {
         default: return "Unknown";
     }
 }
+*/
+
 
 /* node type :
     lecture,
